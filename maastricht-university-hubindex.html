@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Maastricht University Hub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: black editorial hero with a hand-drawn map bleeding off the right edge, mist workspace, uneven bento of black and white tiles, diagonal sliced sign-off. */
+:root{
+  --black:#000000; --graphite:#161617; --ink:#1D1D1F; --mist:#F5F5F7; --white:#FFFFFF;
+  --grey:#6E6E73; --dgrey:#86868B; --line:#D2D2D7;
+  --blue:#0071E3; --link:#0066CC; --bluedk:#2997FF;
+  --amber:#F5C26B; --sky:#7CB8FF;
+  --river:#0C1D30; --ok:#1D7A3A; --okbg:#E6F4EA; --warn:#B25E09; --warnbg:#FDF1E3; --bad:#C4271C;
+  --sans:-apple-system,BlinkMacSystemFont,"SF Pro Display","Instrument Sans","Helvetica Neue",Arial,sans-serif;
+  --serif:"Instrument Serif","Iowan Old Style","Times New Roman",serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --gutter-l:max(22px,env(safe-area-inset-left,0px));
+  --gutter-r:max(22px,env(safe-area-inset-right,0px));
+  --navh:44px; --top:env(safe-area-inset-top,0px);
+  color-scheme:light;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:110px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--mist);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.47;letter-spacing:-.01em;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit;letter-spacing:inherit}
+button{cursor:pointer;background:none;border:0;padding:0}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+h1,h2,h3,h4,p,dl,dd,dt,ul,ol{margin:0}
+ul,ol{padding:0;list-style:none}
+svg{display:block}
+.ic{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}
+:focus-visible{outline:2px solid var(--bluedk);outline-offset:3px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.serif{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
+.mono{font-family:var(--mono);font-weight:400;letter-spacing:0}
+.wrap{padding-left:var(--gutter-l);padding-right:var(--gutter-r)}
+.in{max-width:1180px;margin:0 auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:var(--top);background:var(--graphite);z-index:1000}
+
+/* ---------- buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:980px;font-size:17px;font-weight:500;letter-spacing:-.01em;border:1px solid var(--blue);transition:background .2s,color .2s}
+.btn:hover{text-decoration:none}
+.btn.fill{background:var(--blue);color:#fff}
+.btn.fill:hover{background:#0077ED}
+.btn.out{color:var(--blue);background:transparent}
+.btn.out:hover{background:var(--blue);color:#fff}
+.on-dark .btn.out{color:var(--bluedk);border-color:var(--bluedk)}
+.on-dark .btn.out:hover{background:var(--bluedk);color:#000}
+
+/* ---------- global nav ---------- */
+.gnav{position:sticky;top:var(--top);z-index:900;background:var(--graphite);height:var(--navh);color:#f5f5f7}
+.gnav .in{display:flex;align-items:center;justify-content:space-between;height:100%}
+.gnav .in,.lnav .in,.panel .in{max-width:1224px}
+.mark{display:flex;align-items:center;width:28px;height:28px;color:#f5f5f7}
+.mark svg{width:22px;height:22px}
+.gnav-links{display:flex;align-items:center;gap:0;height:100%}
+.gnav-links button{height:100%;padding:0 clamp(8px,1.1vw,16px);font-size:12px;color:rgba(245,245,247,.82);letter-spacing:-.005em;white-space:nowrap;transition:color .2s}
+.gnav-links button:hover,.gnav-links button[aria-expanded="true"]{color:#fff}
+.gnav-tools{display:flex;align-items:center;gap:2px}
+.gnav-tools button{width:36px;height:36px;display:grid;place-items:center;color:rgba(245,245,247,.82);border-radius:50%}
+.gnav-tools button:hover{color:#fff}
+.gnav-tools .burger{display:none}
+@media (max-width:959px){.gnav-links{display:none}.gnav-tools .burger{display:grid}}
+
+.blur{position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.38);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .3s}
+.blur.open{opacity:1;pointer-events:auto}
+.panel{position:fixed;left:0;right:0;top:calc(var(--navh) + var(--top));z-index:850;background:var(--graphite);color:#f5f5f7;clip-path:inset(0 0 100% 0);visibility:hidden;transition:clip-path .38s cubic-bezier(.3,.7,.2,1),visibility 0s .38s;max-height:calc(100vh - var(--navh) - var(--top));overflow:auto}
+.panel.open{clip-path:inset(0 0 0 0);visibility:visible;transition:clip-path .38s cubic-bezier(.3,.7,.2,1),visibility 0s}
+.panel .in{padding-block:44px 56px}
+.mega{display:grid;grid-template-columns:1.3fr 1fr 1.3fr;gap:48px}
+.mega h4{font-size:12px;font-weight:400;color:var(--dgrey);margin-bottom:14px;letter-spacing:0}
+.mega .big a{display:block;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.2;color:#f5f5f7;padding:5px 0}
+.mega .big a:hover{color:#fff;text-decoration:none;opacity:.8}
+.mega .small a{display:block;font-size:14px;font-weight:600;color:#f5f5f7;padding:5px 0}
+.mega .top .t{font-family:var(--serif);font-style:italic;font-size:32px;line-height:1.1;color:#fff;display:block;letter-spacing:-.01em}
+.mega .top .t:hover{text-decoration:none;opacity:.85}
+.mega .top .m{font-family:var(--mono);font-size:12px;color:var(--dgrey);margin-top:12px}
+@media (max-width:959px){.mega{grid-template-columns:1fr;gap:28px}}
+.sfield{display:flex;align-items:center;gap:14px;border-bottom:1px solid #424245;padding-bottom:14px}
+.sfield .ic{width:28px;height:28px;color:var(--dgrey)}
+.sfield input{flex:1;min-width:0;background:none;border:0;outline:0;font-size:clamp(22px,4vw,32px);font-weight:600;letter-spacing:-.03em;color:#fff}
+.sfield input::placeholder{color:#6e6e73}
+.sfield:focus-within{border-color:var(--bluedk)}
+.sres{margin-top:24px;display:grid;gap:2px}
+.sres h4{font-size:12px;font-weight:400;color:var(--dgrey);margin-bottom:10px}
+.sres a{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding:9px 0;color:#f5f5f7;font-size:16px;font-weight:600;border-radius:4px;cursor:pointer}
+.sres a:hover{text-decoration:none;color:#fff;opacity:.8}
+.sres a span{font-family:var(--mono);font-size:11px;color:var(--dgrey);font-weight:400;white-space:nowrap}
+.sres .none{color:var(--dgrey);font-size:15px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--black);color:#f5f5f7;position:relative;overflow:hidden}
+.hero-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.12fr);gap:0;align-items:center;padding-block:clamp(48px,7vw,92px) clamp(36px,5vw,64px)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--dgrey);display:flex;align-items:center;gap:10px}
+.eyebrow i{width:7px;height:7px;border-radius:50%;background:var(--amber);flex:none}
+.hero h1{font-size:clamp(54px,8.6vw,104px);line-height:.98;font-weight:700;letter-spacing:-.06em;margin:22px 0 0;color:#fff;text-wrap:balance}
+.hero h1 em{font-family:var(--serif);font-weight:400;font-style:italic;letter-spacing:-.045em;display:inline-block;padding-right:.04em}
+.hero .duo{margin-top:26px;font-size:clamp(24px,3vw,34px);font-weight:700;letter-spacing:-.035em;line-height:1.12}
+.hero .duo .a{color:var(--amber)}.hero .duo .s{color:var(--sky);display:block}
+.hero .sub{margin-top:18px;font-size:19px;line-height:1.42;color:var(--dgrey);max-width:30ch}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.mapbox{margin-right:calc(var(--gutter-r) * -1);min-width:0;padding-left:clamp(0px,2vw,28px)}
+.mapbox svg{width:100%;height:auto;max-width:none;overflow:visible}
+.ledger{border-top:1px solid #2a2a2d;font-family:var(--mono);font-size:12px;color:var(--dgrey);padding-block:18px 22px;display:flex;flex-wrap:wrap;gap:6px 22px}
+.ledger b{color:#f5f5f7;font-weight:500}
+@media (max-width:959px){.hero-g{grid-template-columns:1fr}.mapbox{margin-right:calc(var(--gutter-r) * -1);margin-top:36px}.hero .sub{max-width:40ch}}
+.river-flow{stroke-dasharray:3 9;animation:flow 6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:96}}
+
+/* ---------- local nav ---------- */
+.lnav{position:sticky;top:calc(var(--navh) + var(--top));z-index:700;height:52px;background:rgba(255,255,255,.78);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.08)}
+.lnav .in{height:100%;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lnav b{font-size:21px;font-weight:700;letter-spacing:-.03em;white-space:nowrap}
+.lnav nav{display:flex;align-items:center;gap:clamp(12px,2.2vw,26px);font-size:12px}
+.lnav nav button{color:var(--ink);opacity:.8;font-size:12px;white-space:nowrap}
+.lnav nav button:hover{opacity:1}
+.lnav nav button[aria-current="true"]{opacity:.42}
+.lnav .pill{background:var(--blue);color:#fff;border-radius:980px;padding:5px 12px;opacity:1;font-weight:500}
+.lnav .pill:hover{background:#0077ED}
+@media (max-width:520px){.lnav b{font-size:17px}.lnav nav{gap:10px}.lnav nav .hide-s{display:none}}
+
+/* ---------- workspace ---------- */
+.ws{background:var(--mist);padding-block:clamp(48px,7vw,88px) clamp(56px,8vw,110px)}
+.ws-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px 40px;align-items:end;margin-bottom:34px}
+.ws-head h2{font-size:clamp(38px,6vw,68px);line-height:1.02;font-weight:700;letter-spacing:-.05em;text-wrap:balance}
+.ws-head h2 em{font-family:var(--serif);font-weight:400;font-style:italic;color:var(--dgrey);letter-spacing:-.035em}
+.ws-head p{margin-top:16px;font-size:19px;line-height:1.42;color:var(--grey);max-width:52ch}
+.seg{display:inline-flex;padding:3px;background:#e8e8ed;border-radius:12px;gap:2px}
+.seg button{padding:9px 16px;border-radius:9px;font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;display:flex;gap:8px;align-items:center}
+.seg button .mono{font-size:12px;color:var(--grey)}
+.seg button[aria-selected="true"]{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+@media (max-width:820px){.ws-head{grid-template-columns:1fr}.seg{justify-self:start;max-width:100%;overflow-x:auto}}
+.chip{display:inline-flex;align-items:center;gap:8px;margin-bottom:22px;background:var(--ink);color:#fff;border-radius:980px;padding:7px 8px 7px 16px;font-size:14px;font-weight:500}
+.chip button{width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.18);color:#fff;display:grid;place-items:center}
+.chip button:hover{background:rgba(255,255,255,.3)}
+.chip .ic{width:13px;height:13px}
+
+/* ---------- planner ---------- */
+.planner{background:#fff;border-radius:26px;padding:clamp(24px,4vw,48px)}
+.kick{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline;margin-bottom:22px}
+.kick .mono{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+.kick .serif{font-size:22px;color:#B8820F}
+.sentence{font-size:clamp(23px,3.3vw,34px);font-weight:600;letter-spacing:-.035em;line-height:1.5;max-width:30em}
+.sentence .blank{display:inline-flex;align-items:center;white-space:nowrap;vertical-align:baseline;color:var(--blue);border-bottom:2px solid var(--blue);line-height:1.15;position:relative}
+.sentence .blank::after{content:"";width:7px;height:7px;border-right:2px solid var(--blue);border-bottom:2px solid var(--blue);transform:rotate(45deg) translate(-2px,-2px);margin-left:6px;flex:none}
+.sentence select,.sentence input{appearance:none;-webkit-appearance:none;background:none;border:0;outline:0;color:var(--blue);font-weight:600;letter-spacing:-.035em;font-size:1em;padding:0;cursor:pointer;max-width:100%}
+.sentence input[type=date]{width:auto;min-width:0;font-family:var(--sans);position:relative}
+.sentence input::-webkit-calendar-picker-indicator{opacity:0;position:absolute;inset:0;width:100%;height:100%;cursor:pointer}
+.sentence .blank:focus-within{outline:2px solid var(--bluedk);outline-offset:4px;border-radius:4px}
+.sem{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-top:30px}
+.sem b{font-size:20px;letter-spacing:-.02em}
+.sem .serif{font-size:22px;color:var(--grey)}
+.note{margin-top:8px;color:var(--grey);font-size:15px;max-width:62ch}
+.warn{display:inline-block;margin-top:16px;background:#FFE9BF;color:#6b3b00;border-radius:14px;padding:9px 16px;font-size:14px;font-weight:500;max-width:70ch}
+.figs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:34px;padding-top:28px;border-top:1px solid var(--line)}
+.fig b{display:block;font-size:44px;font-weight:700;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.fig span{display:block;margin-top:8px;font-size:14px;color:var(--grey)}
+.fig.hot b{color:#C47A0A}
+@media (max-width:560px){.fig b{font-size:34px}.fig span{font-size:12px}.figs{gap:12px}}
+
+/* ribbon */
+.ribbon-wrap{margin-top:30px;overflow-x:auto;padding:0 18px 6px;scrollbar-width:thin}
+.ribbon{position:relative;height:190px;min-width:720px}
+.ribbon .base{position:absolute;left:0;right:0;top:90px;height:2px;background:var(--line)}
+.ribbon .past{position:absolute;left:0;top:89px;height:4px;background:var(--ink);border-radius:2px}
+.ribbon .tick{position:absolute;top:106px;padding-left:5px;font-family:var(--mono);font-size:10.5px;color:var(--dgrey);white-space:nowrap}
+.ribbon .tick::before{content:"";position:absolute;left:0;top:-14px;width:1px;height:9px;background:var(--line)}
+.ribbon .dot{position:absolute;width:16px;height:16px;margin-left:-8px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);background:var(--dgrey);transition:transform .15s;z-index:2}
+.ribbon .dot:hover{transform:scale(1.35)}
+.dot.s-done{background:var(--ok)}.dot.s-late{background:#E39A1B}.dot.s-soon{background:var(--blue)}.dot.s-later{background:var(--dgrey)}.dot.s-key{background:var(--ink)}
+.ribbon .flag{position:absolute;white-space:nowrap;font-size:12px;font-weight:600;line-height:1.25}
+.ribbon .flag small{display:block;font-family:var(--mono);font-weight:400;color:var(--grey);font-size:11px;margin-top:1px}
+.ribbon .flag.up{top:0}.ribbon .flag.dn{top:152px}
+.ribbon .flag.l{padding-left:7px}
+.ribbon .flag.r{transform:translateX(-100%);text-align:right;padding-right:7px}
+.ribbon .flag::after{content:"";position:absolute;width:1px;background:currentColor;opacity:.45}
+.ribbon .flag.l::after{left:0}.ribbon .flag.r::after{right:0}
+.ribbon .flag.up::after{top:0;height:52px}
+.ribbon .flag.dn::after{bottom:100%;height:60px}
+.ribbon .flag.ink{color:var(--ink)}.ribbon .flag.blue{color:var(--blue)}.ribbon .flag.gr{color:var(--grey)}
+.prog{display:flex;align-items:center;gap:14px;margin-top:22px;font-size:15px;color:var(--grey)}
+.prog b{color:var(--ink);font-weight:600}
+.ring{width:40px;height:40px}
+
+/* plan list */
+.plan{margin-top:30px}
+.month{display:flex;align-items:center;gap:16px;margin:36px 0 14px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--grey)}
+.month::after{content:"";flex:1;height:1px;background:var(--line)}
+.month:first-child{margin-top:0}
+.step{display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;padding:8px 0}
+.step .when{padding-top:22px}
+.step .when b{display:block;font-size:19px;font-weight:700;letter-spacing:-.03em}
+.step .when .serif{display:block;font-size:19px;color:var(--grey);margin-top:2px}
+.step .when .mono{display:block;font-size:11px;color:#B8700A;margin-top:6px}
+.sheet{background:var(--mist);border-radius:20px;padding:22px 24px;min-width:0}
+.step.is-done .sheet{background:#fafafc}
+.step.is-done h3{color:var(--grey)}
+@media (max-width:720px){.step{grid-template-columns:1fr;gap:6px}.step .when{padding-top:8px;display:flex;flex-wrap:wrap;gap:2px 12px;align-items:baseline}.step .when .mono{margin-top:0}}
+.status{display:inline-block;font-size:12px;font-weight:600;padding:3px 10px;border-radius:980px;margin-bottom:10px}
+.st-late{background:var(--warnbg);color:var(--warn)}.st-soon{background:#E1EEFD;color:#0A59B8}.st-month{background:#EBEBEF;color:var(--grey)}
+.st-done{background:var(--okbg);color:var(--ok)}.st-key{background:var(--black);color:#fff}
+.sheet-t{display:flex;align-items:flex-start;gap:12px}
+.sheet h3{font-size:22px;font-weight:700;letter-spacing:-.03em;line-height:1.2}
+.round{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--dgrey);display:grid;place-items:center;flex:none;margin-top:1px;color:transparent;background:#fff}
+.round .ic{width:14px;height:14px;stroke-width:2.2}
+.round[aria-checked="true"]{background:var(--ok);border-color:var(--ok);color:#fff}
+.sheet p.ex{margin-top:8px;color:var(--grey);font-size:15px;max-width:62ch}
+.check{margin-top:14px;display:grid;gap:8px}
+.check label{display:flex;gap:11px;align-items:flex-start;font-size:15px;cursor:pointer;line-height:1.4}
+.check input{position:absolute;opacity:0;width:20px;height:20px;margin:0}
+.check .bx{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--dgrey);flex:none;display:grid;place-items:center;color:transparent;background:#fff;margin-top:1px}
+.check .bx .ic{width:13px;height:13px;stroke-width:2.4}
+.check input:checked + .bx{background:var(--blue);border-color:var(--blue);color:#fff}
+.check input:checked ~ span{text-decoration:line-through;color:var(--dgrey)}
+.check input:focus-visible + .bx{outline:2px solid var(--bluedk);outline-offset:2px}
+.slink{display:inline-block;margin-top:14px;font-size:14px;font-weight:500;color:var(--link);text-align:left}
+.slink:hover{text-decoration:underline}
+
+/* meta row */
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(0,0,0,.09)}
+.black .meta,.tile.black .meta{border-color:#2f2f33}
+.pl{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:4px 10px;border-radius:980px}
+.pl .ic{width:14px;height:14px}
+.pl.pend{background:#EBEBEF;color:var(--grey)}
+.pl.ok{background:var(--okbg);color:var(--ok)}.pl.old{background:var(--warnbg);color:var(--warn)}.pl.pin{background:#E1EEFD;color:#0A59B8}
+.auth{margin-left:auto;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--grey)}
+.vote{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:980px;padding:4px 12px 4px 10px;font-family:var(--mono);font-size:13px;color:var(--ink)}
+.vote:hover{border-color:var(--dgrey)}
+.vote[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.vote .ic{width:15px;height:15px}
+.flagb{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#fff;display:grid;place-items:center;color:var(--grey)}
+.flagb:hover{border-color:var(--dgrey);color:var(--ink)}
+.flagb[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.flagb .ic{width:15px;height:15px}
+@media (max-width:480px){.auth{margin-left:0;flex-basis:100%;order:9}}
+
+/* ---------- bento ---------- */
+.bento{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:16px}
+.tile{background:#fff;border-radius:26px;padding:clamp(22px,3vw,34px);display:flex;flex-direction:column;min-width:0}
+.tile.black{background:var(--black);color:#f5f5f7}
+.tile.old{opacity:.55}
+.tile .top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:var(--grey)}
+.tile.black .top{color:var(--dgrey)}
+.tile h3{margin-top:22px;font-size:clamp(26px,3vw,32px);font-weight:700;letter-spacing:-.04em;line-height:1.08;text-wrap:balance}
+.tile.black h3{color:#fff}
+.tile .lead{margin-top:14px;font-size:16px;line-height:1.5;color:var(--grey)}
+.tile.black .lead{color:#a1a1a6}
+.tile dl{margin-top:18px;display:grid;gap:14px;align-content:start;flex:1 0 auto}
+.tile dt{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--warn)}
+.tile.black dt.mis{color:var(--amber)}
+.tile dt.fx{color:var(--ok)}
+.tile.black dt.fx{color:var(--sky)}
+.tile dd{font-size:15.5px;line-height:1.5;margin-top:2px}
+.tile .file{margin-top:16px;display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--grey)}
+.tile .meta{margin-top:20px;padding-top:14px}
+.tile.black .vote,.tile.black .flagb{background:#1d1d1f;border-color:#3a3a3d;color:#f5f5f7}
+.tile.black .vote[aria-pressed="true"]{background:var(--blue);border-color:var(--blue)}
+.tile.black .flagb[aria-pressed="true"]{background:var(--warn);border-color:var(--warn)}
+.tile.black .auth{color:#a1a1a6}
+.tile.black .pl.ok{background:#12301c;color:#7fd99a}.tile.black .pl.old{background:#3a2208;color:#f3b36a}.tile.black .pl.pin{background:#0f2a4a;color:#8ec3ff}
+@media (max-width:959px){.bento{grid-template-columns:1fr}.bento .tile{grid-column:1/-1!important}}
+.empty{padding:40px;text-align:center;color:var(--grey);background:#fff;border-radius:26px;grid-column:1/-1}
+
+.flash{animation:flash 1.8s ease-out}
+@keyframes flash{0%,35%{box-shadow:0 0 0 4px var(--blue)}100%{box-shadow:0 0 0 4px rgba(0,113,227,0)}}
+
+/* ---------- sign-off ---------- */
+.sign{background:var(--black);color:#f5f5f7;overflow:hidden;padding-block:clamp(56px,8vw,110px) clamp(48px,6vw,80px)}
+.slice{position:relative;display:inline-block;max-width:100%;font-size:clamp(100px,19.6vw,236px);font-weight:700;letter-spacing:-.065em;line-height:.88;margin-bottom:clamp(36px,5vw,64px)}
+.slice span{display:block}
+.slice .o{color:transparent;-webkit-text-stroke:1px var(--dgrey)}
+.slice .f{position:absolute;inset:0;clip-path:polygon(0 100%,100% 18%,100% 100%);color:#fff}
+.slice .f em{color:var(--sky);font-style:normal}
+.sign-g{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:40px;align-items:end}
+.sign p{font-size:clamp(20px,2.4vw,28px);line-height:1.25;letter-spacing:-.025em;color:#a1a1a6;max-width:26em}
+.sign p b{color:#fff;font-weight:700}
+.sign .btns{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+@media (max-width:820px){.sign-g{grid-template-columns:1fr}}
+
+/* ---------- footer ---------- */
+.foot{background:var(--mist);color:var(--grey);font-size:12px;line-height:1.5;padding-block:28px 34px}
+.foot .nt{padding-bottom:18px;border-bottom:1px solid var(--line);max-width:80ch}
+.foot .cols{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:22px 16px;padding:22px 0;border-bottom:1px solid var(--line)}
+.foot .cols h4{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:8px}
+.foot .cols button{display:block;text-align:left;color:var(--grey);font-size:12px;padding:3px 0}
+.foot .cols button:hover{color:var(--ink);text-decoration:underline}
+.foot .base{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:16px}
+@media (max-width:959px){.foot .cols{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* ---------- modal ---------- */
+.ov{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.45);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);display:grid;place-items:center;padding:max(16px,var(--top)) var(--gutter-r) 16px var(--gutter-l);opacity:0;visibility:hidden;transition:opacity .25s,visibility 0s .25s}
+.ov.open{opacity:1;visibility:visible;transition:opacity .25s}
+.mod{background:#fff;border-radius:26px;width:100%;max-width:600px;max-height:calc(100vh - 32px);overflow:auto;padding:clamp(22px,4vw,36px);transform:translateY(36px);transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.ov.open .mod{transform:none}
+.mod h2{font-size:30px;font-weight:700;letter-spacing:-.045em;line-height:1.05}
+.mod .sub{margin-top:8px;color:var(--grey);font-size:15px}
+.mod-h{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.mod-h .xb{width:32px;height:32px;border-radius:50%;background:var(--mist);display:grid;place-items:center;flex:none}
+.mod-h .xb:hover{background:#e8e8ed}
+.fld{margin-top:20px}
+.fld label.l{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;font-weight:600;margin-bottom:4px}
+.fld label.l .mono{font-size:11px;color:var(--dgrey);font-weight:400;text-transform:uppercase;letter-spacing:.06em}
+.fld .hint{display:block;font-family:var(--serif);font-style:italic;font-size:17px;color:var(--grey);margin-bottom:6px;line-height:1.2}
+.fld input[type=text],.fld select,.fld textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:11px 14px;background:#fff;font-size:16px;outline:0}
+.fld textarea{min-height:104px;resize:vertical}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,.18)}
+.fld .cnt{display:block;text-align:right;font-family:var(--mono);font-size:11px;color:var(--dgrey);margin-top:4px}
+.fld .err{display:none;color:var(--bad);font-size:13px;margin-top:5px}
+.fld.bad .err{display:block}
+.fld.bad input,.fld.bad select,.fld.bad textarea,.fld.bad .drop{border-color:var(--bad)}
+.drop{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--dgrey);border-radius:14px;padding:16px;cursor:pointer;color:var(--grey);font-size:14px;background:var(--mist)}
+.drop:hover,.drop.over{border-color:var(--blue);color:var(--blue)}
+.drop .ic{width:24px;height:24px}
+.drop b{display:block;color:var(--ink);font-weight:600;font-size:14px;word-break:break-all}
+.mod-f{display:flex;flex-wrap:wrap;gap:14px 12px;align-items:center;justify-content:space-between;margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+.mod-f p{font-size:13px;color:var(--grey);flex:1 1 220px}
+.mod-f .bt{display:flex;gap:8px}
+.mod-f .btn{min-height:40px;font-size:15px;padding:0 18px}
+.mod-f .btn.ghost{border-color:transparent;color:var(--ink);background:var(--mist)}
+
+/* ---------- toast ---------- */
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);z-index:3000;background:#1d1d1f;color:#fff;border-radius:980px;padding:12px 20px 12px 14px;display:flex;align-items:center;gap:10px;font-size:14px;max-width:min(92vw,520px);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast i{width:20px;height:20px;border-radius:50%;background:#30B455;display:grid;place-items:center;flex:none}
+.toast i .ic{width:12px;height:12px;stroke-width:2.4;color:#fff}
+
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .river-flow{animation:none}
+}
+</style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-up" viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></symbol>
+    <symbol id="i-flag" viewBox="0 0 24 24"><path d="M6 21V4M6 4h11l-2.5 4L17 12H6"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11Z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.5 3 8 7 9.5 4-1.5 7-5 7-9.5V6l-7-3Z"/><path d="m8.8 12 2.4 2.4 4-4.4"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"/><path d="M14 3v5h5"/></symbol>
+    <symbol id="i-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M5 15v3a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3"/></symbol>
+  </defs>
+</svg>
+
+<a id="top"></a>
+<header class="gnav" role="banner">
+  <div class="in wrap">
+    <a class="mark" href="#top" aria-label="Maastricht University Hub, back to top">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 2.8c-3.2 3.4 3.2 5.4 0 9.2s3.2 5.8 0 9.2"/></svg>
+    </a>
+    <nav class="gnav-links" id="gnavLinks" aria-label="Folders"></nav>
+    <div class="gnav-tools">
+      <button type="button" id="btnSearch" aria-label="Search the Hub (press /)"><svg class="ic"><use href="#i-search"/></svg></button>
+      <button type="button" id="btnPlus" aria-label="Contribute a Survival Tip"><svg class="ic"><use href="#i-plus"/></svg></button>
+      <button type="button" class="burger" id="btnBurger" aria-label="All folders" aria-expanded="false"><svg class="ic"><use href="#i-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="blur" id="blur"></div>
+<div class="panel" id="panel" role="region" aria-label="Menu"><div class="in wrap" id="panelIn"></div></div>
+
+<main>
+<section class="hero on-dark" aria-labelledby="h1">
+  <div class="wrap">
+    <div class="in">
+      <div class="hero-g">
+        <div class="hero-t">
+          <p class="eyebrow"><i></i>Maastricht University · Spring intake 2027</p>
+          <h1 id="h1">Maastricht, <em>decoded.</em></h1>
+          <p class="duo"><span class="a">By students,</span> <span class="s">for students.</span></p>
+          <p class="sub">Everything the last cohort learned the hard way, filed and verified before you land.</p>
+          <div class="cta">
+            <button type="button" class="btn fill" data-go="timeline">Plan my arrival</button>
+            <button type="button" class="btn out" data-open="contribute">Contribute a tip</button>
+          </div>
+        </div>
+        <div class="mapbox">
+          <svg id="map" viewBox="0 0 800 560" role="img" aria-label="Hand-drawn sketch map of Maastricht: the Maas flows north between the centre on the west bank and Wyck, the station and Randwyck on the east bank. A bike route runs from the station across Sint Servaasbrug to Markt and Vrijthof, about 7 minutes.">
+            <defs>
+              <filter id="wob" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.028" numOctaves="2" seed="7" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="5" xChannelSelector="R" yChannelSelector="G"/>
+              </filter>
+              <path id="riv" d="M430 -10C405 60 440 130 415 200S385 300 420 360S445 470 410 580"/>
+              <path id="rivUp" d="M410 580C445 470 455 420 420 360C385 300 390 270 415 200C440 130 405 60 430 -10"/>
+              <path id="bike" d="M592 196C540 218 470 242 398 251L336 260 282 290"/>
+              <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M1 1.5 9 5 1 8.5" fill="none" stroke="#F5C26B" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></marker>
+            </defs>
+
+            <!-- graticule -->
+            <g stroke="#1c1c1e" stroke-width="1" fill="none">
+              <path d="M0 100H800M0 280H800M0 460H800M230 0V560M560 0V560"/>
+            </g>
+            <g font-family="Geist Mono,monospace" font-size="10" fill="#555559">
+              <text x="8" y="94">50.865°N</text><text x="8" y="274">50.851°N</text><text x="8" y="454">50.837°N</text>
+              <text x="236" y="548">5.67°E</text><text x="566" y="548">5.70°E</text>
+            </g>
+
+            <!-- river -->
+            <g filter="url(#wob)">
+              <use href="#riv" fill="none" stroke="#1b3a5c" stroke-width="30" stroke-linecap="round"/>
+              <use href="#riv" fill="none" stroke="#0C1D30" stroke-width="26" stroke-linecap="round"/>
+              <use href="#riv" class="river-flow" fill="none" stroke="#7CB8FF" stroke-opacity=".55" stroke-width="1.2"/>
+            </g>
+            <text font-family="Instrument Serif,Georgia,serif" font-style="italic" font-size="15" fill="#9fcbff" dy="4.5"><textPath href="#rivUp" startOffset="14%">de Maas, flowing north</textPath></text>
+
+            <!-- streets -->
+            <g filter="url(#wob)" fill="none" stroke="#2c2c2f" stroke-width="1.3" stroke-linecap="round">
+              <path d="M592 196C560 190 500 175 424 166"/>
+              <path d="M236 250C280 262 330 262 372 252"/>
+              <path d="M282 290C300 320 320 350 340 400"/>
+              <path d="M330 262C300 230 290 190 285 150"/>
+              <path d="M406 326C440 340 480 330 520 300"/>
+              <path d="M592 196C610 250 590 330 585 392"/>
+              <path d="M340 400C330 440 300 470 270 500"/>
+            </g>
+
+            <!-- bridges -->
+            <g stroke="#86868B" stroke-width="4" stroke-linecap="round" filter="url(#wob)">
+              <path d="M410 96l40 -3"/><path d="M404 166l40 0"/><path d="M378 252l42 0"/><path d="M386 326l42 4"/>
+            </g>
+            <g font-family="Instrument Sans,sans-serif" font-size="11" fill="#a1a1a6">
+              <text x="372" y="241" text-anchor="end">Sint Servaasbrug</text>
+              <text x="372" y="350" text-anchor="end" dx="-4">Hoge Brug</text>
+            </g>
+
+            <!-- railway -->
+            <path d="M730 -10C672 90 628 160 592 196C560 232 650 330 722 570" fill="none" stroke="#6E6E73" stroke-width="2" stroke-dasharray="9 6" filter="url(#wob)"/>
+            <text x="672" y="96" font-family="Geist Mono,monospace" font-size="10" fill="#86868B" transform="rotate(-52 672 96)">NS · Liège / Eindhoven</text>
+
+            <!-- districts -->
+            <g filter="url(#wob)" fill="none" stroke="#4a4a4f" stroke-width="1.3" stroke-dasharray="5 5">
+              <path d="M230 230C260 200 360 205 372 250C385 300 330 330 270 320C225 310 205 260 230 230Z"/>
+              <path d="M235 118C270 98 350 103 372 138C380 168 330 188 280 186C240 183 215 148 235 118Z"/>
+              <path d="M175 350C210 330 290 345 305 385C315 425 260 450 210 440C165 428 150 380 175 350Z"/>
+              <path d="M310 455C340 435 385 445 390 480C392 520 350 535 315 520C290 505 290 470 310 455Z"/>
+              <path d="M440 225C480 205 540 220 548 260C555 300 510 320 465 312C435 305 425 250 440 225Z"/>
+              <path d="M525 385C570 365 640 378 650 422C658 462 610 488 562 478C522 468 500 415 525 385Z"/>
+            </g>
+            <g font-family="Geist Mono,monospace" font-size="10" letter-spacing="1.6" fill="#86868B" text-anchor="middle">
+              <text x="326" y="316">CENTRUM</text>
+              <text x="494" y="300">WYCK</text>
+              <text x="588" y="466">RANDWYCK</text>
+              <text x="238" y="436">BRUSSELSEPOORT</text>
+              <text x="304" y="130">JEKERKWARTIER</text>
+              <text x="352" y="512">MARIABERG</text>
+            </g>
+
+            <!-- bike route -->
+            <use href="#bike" fill="none" stroke="#F5C26B" stroke-width="2.6" stroke-dasharray="1 7" stroke-linecap="round" filter="url(#wob)"/>
+            <circle r="5.5" fill="#F5C26B"><animateMotion id="bikeAnim" dur="7s" repeatCount="indefinite" rotate="0"><mpath href="#bike"/></animateMotion></circle>
+
+            <!-- points -->
+            <g font-family="Instrument Sans,sans-serif" font-size="12" font-weight="500" fill="#f5f5f7">
+              <circle cx="282" cy="290" r="4" fill="#f5f5f7"/><text x="272" y="295" text-anchor="end">Vrijthof</text>
+              <circle cx="336" cy="260" r="3.5" fill="#f5f5f7"/><text x="338" y="278">Markt</text>
+              <rect x="587" y="191" width="10" height="10" fill="#f5f5f7"/><text x="604" y="188">Station</text>
+              <circle cx="580" cy="440" r="4" fill="#f5f5f7"/><text x="548" y="426" text-anchor="middle" dx="14" font-size="11">UM Randwyck · MUMC+</text>
+              <circle cx="318" cy="352" r="3.5" fill="#f5f5f7"/><text x="310" y="370" text-anchor="end" font-size="11">SBE · Tongersestraat</text>
+            </g>
+
+            <!-- annotation -->
+            <g font-family="Instrument Serif,Georgia,serif" font-style="italic" fill="#F5C26B" font-size="19">
+              <text x="456" y="352">about 7 minutes by bike,</text>
+              <text x="456" y="374">station to Vrijthof</text>
+            </g>
+            <path d="M470 338C442 322 472 292 512 262" fill="none" stroke="#F5C26B" stroke-width="1.4" stroke-linecap="round" marker-end="url(#ah)" filter="url(#wob)"/>
+            <text x="30" y="548" font-family="Instrument Serif,Georgia,serif" font-style="italic" font-size="15" fill="#6E6E73">Sketch map, not to scale</text>
+          </svg>
+        </div>
+      </div>
+      <div class="ledger"><span><b id="ledN">0</b> verified entries</span><span>·</span><span><b>214</b> senior contributors</span><span>·</span><span><b>6</b> faculties</span><span>·</span><span>Last re-verified <b>02 Nov 2026</b></span></div>
+    </div>
+  </div>
+</section>
+
+<div class="lnav" role="navigation" aria-label="Survival Hub">
+  <div class="in wrap">
+    <b>Survival Hub</b>
+    <nav>
+      <button type="button" id="lnTimeline" class="hide-s" data-go="timeline">Plan my arrival</button>
+      <button type="button" id="lnRules" data-go="rules">Unspoken Rules</button>
+      <button type="button" class="pill" data-open="contribute">+ Contribute</button>
+    </nav>
+  </div>
+</div>
+
+<section class="ws" id="ws" aria-label="Workspace">
+  <div class="wrap"><div class="in">
+    <div id="chipSlot"></div>
+    <div class="ws-head">
+      <div>
+        <h2 id="wsTitle"></h2>
+        <p id="wsLede"></p>
+      </div>
+      <div class="seg" role="tablist" aria-label="Workspace views" id="seg">
+        <button type="button" role="tab" id="tabT" aria-controls="pT" aria-selected="true" tabindex="0">Survival Timeline <span class="mono" id="cntT"></span></button>
+        <button type="button" role="tab" id="tabR" aria-controls="pR" aria-selected="false" tabindex="-1">Unspoken Rules <span class="mono" id="cntR"></span></button>
+      </div>
+    </div>
+
+    <div id="pT" role="tabpanel" aria-labelledby="tabT">
+      <div class="planner">
+        <div class="kick"><span class="mono">Arrival Planner</span><span class="serif" id="exTag">Example date. Change it to yours.</span></div>
+        <p class="sentence" id="sentence">
+          I land in Maastricht on
+          <span class="blank"><label class="sr" for="inDate">Landing date</label><input type="date" id="inDate"></span>,
+          I hold
+          <span class="blank"><label class="sr" for="inPass">Passport</label><select id="inPass"><option value="eu">an EU/EEA or Swiss</option><option value="non">a non-EU</option></select></span>
+          passport, my room is
+          <span class="blank"><label class="sr" for="inRoom">Room status</label><select id="inRoom"><option value="open">not sorted yet</option><option value="signed">already signed</option></select></span>,
+          and I'm coming via
+          <span class="blank"><label class="sr" for="inRoute">Route</label><select id="inRoute">
+            <option value="ams">Amsterdam Schiphol</option><option value="ein">Eindhoven Airport</option><option value="bru">Brussels Airport</option><option value="dus">Düsseldorf Airport</option><option value="mst">Maastricht Aachen Airport</option><option value="trn">train or car</option></select></span>.
+        </p>
+        <div class="sem"><b id="semName"></b><span class="serif" id="semYear"></span></div>
+        <p class="note" id="semNote"></p>
+        <div id="warnSlot"></div>
+        <div class="figs" aria-live="polite">
+          <div class="fig"><b id="fDays">0</b><span>days until you land</span></div>
+          <div class="fig"><b id="fOpen">0</b><span>steps still open</span></div>
+          <div class="fig" id="fDueBox"><b id="fDue">0</b><span>due now or this week</span></div>
+        </div>
+        <div class="ribbon-wrap" id="ribbonWrap"><div class="ribbon" id="ribbon"></div></div>
+        <div class="prog"><svg class="ring" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="16" fill="none" stroke="#E8E8ED" stroke-width="4"/><circle id="ringArc" cx="20" cy="20" r="16" fill="none" stroke="#1D7A3A" stroke-width="4" stroke-linecap="round" stroke-dasharray="0 100.5" transform="rotate(-90 20 20)"/></svg><span id="progTxt"></span></div>
+        <div class="plan" id="plan"></div>
+      </div>
+    </div>
+
+    <div id="pR" role="tabpanel" aria-labelledby="tabR" hidden>
+      <div class="bento" id="bento"></div>
+    </div>
+  </div></div>
+</section>
+
+<section class="sign on-dark" aria-label="Pass it on">
+  <div class="wrap"><div class="in">
+    <div class="slice" aria-hidden="true">
+      <div class="o"><span>Pass it</span><span>on.</span></div>
+      <div class="f"><span>Pass it</span><span><em>on.</em></span></div>
+    </div>
+    <h2 class="sr">Pass it on</h2>
+    <div class="sign-g">
+      <p><b>Leaving Maastricht this semester?</b> Spend three minutes on the one mistake you'd undo. Someone arriving in January will read it on the train from Eindhoven.</p>
+      <div class="btns">
+        <button type="button" class="btn fill" data-open="contribute">Contribute a Survival Tip</button>
+        <button type="button" class="btn out" data-go="rules">Read the rules</button>
+      </div>
+    </div>
+  </div></div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap"><div class="in">
+    <p class="nt">Written and maintained by UM students. Entries are re-verified each semester, but always confirm visa, IND and Gemeente deadlines on the official Maastricht University and municipality websites.</p>
+    <div class="cols" id="footCols"></div>
+    <div class="base"><span>Maastricht University Hub · By Students, For Students</span><span>Maastricht, Nederland</span></div>
+  </div></div>
+</footer>
+
+<div class="ov" id="ov" aria-hidden="true">
+  <form class="mod" id="form" role="dialog" aria-modal="true" aria-labelledby="mTitle" novalidate>
+    <div class="mod-h">
+      <div><h2 id="mTitle">Contribute a Survival Tip</h2><p class="sub">One mistake, one fix. Name the street, the app or the deadline so a junior can act on it.</p></div>
+      <button type="button" class="xb" id="mClose" aria-label="Close"><svg class="ic"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="fld" id="f-topic"><label class="l" for="fTopic">Topic Tag <span class="mono">required</span></label><select id="fTopic"></select><p class="err">Pick a topic.</p></div>
+    <div class="fld" id="f-head"><label class="l" for="fHead">Headline <span class="mono">required</span></label><input type="text" id="fHead" maxlength="70" autocomplete="off"><span class="cnt" id="fCnt">0 / 70</span><p class="err">Write a headline of at least 4 characters.</p></div>
+    <div class="fld" id="f-mis"><label class="l" for="fMis">The Mistake I Made <span class="mono">required</span></label><span class="hint">What went wrong, and what it cost you.</span><textarea id="fMis"></textarea><p class="err">Describe the mistake in at least 20 characters.</p></div>
+    <div class="fld" id="f-fix"><label class="l" for="fFix">The Hack / Fix <span class="mono">required</span></label><span class="hint">The exact steps a junior should take instead.</span><textarea id="fFix"></textarea><p class="err">Describe the fix in at least 20 characters.</p></div>
+    <div class="fld" id="f-file"><span class="l" style="display:flex;justify-content:space-between;font-size:14px;font-weight:600;margin-bottom:6px">Upload File / Syllabus PDF <span class="mono" style="font-size:11px;color:var(--dgrey);font-weight:400;text-transform:uppercase;letter-spacing:.06em">optional</span></span>
+      <label class="drop" id="drop" for="fFile" tabindex="0"><svg class="ic"><use href="#i-upload"/></svg><span id="dropTxt">Drop a PDF here or click to choose. Up to 10 MB.</span></label>
+      <input type="file" id="fFile" accept="application/pdf,.pdf" class="sr"><p class="err" id="fileErr">Only PDF files up to 10 MB.</p></div>
+    <div class="mod-f"><p>New tips show as 'pending review' until two seniors verify them.</p><div class="bt"><button type="button" class="btn ghost" id="mCancel">Cancel</button><button type="submit" class="btn fill">Submit tip</button></div></div>
+  </form>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"><i><svg class="ic"><use href="#i-check"/></svg></i><span id="toastTxt"></span></div>
+<script>
+"use strict";
+/* ============ DATA ============ */
+const FOLDERS = [
+  {id:"academic",   nav:"Academic",       name:"Academic Workspace",  subs:["Syllabi Vault","Course & Workload Reviews"]},
+  {id:"housing",    nav:"Housing",        name:"Housing & Districts", subs:["Wyck vs. Center guides","Landlord Blacklist/Safelist"]},
+  {id:"bureaucracy",nav:"Bureaucracy",    name:"Bureaucracy Decoded", subs:["Visa pipelines","BSN appointments","Bank setup"]},
+  {id:"transit",    nav:"Transit",        name:"Transit & Logistics", subs:["NS Trains","Arriva local buses","Swapfiets leases"]},
+  {id:"food",       nav:"Food",           name:"Food & Cafe Hacks",   subs:["Albert Heijn budget rules","Student discount eats"]},
+  {id:"comfort",    nav:"Comfort",        name:"Emotional Comfort",   subs:["Beating homesickness","Winter blues","UM Counseling"]},
+  {id:"unspoken",   nav:"Unspoken Rules", name:"The Unspoken Rules",  subs:["Dutch directness","Bike fines","Tipping culture"]}
+];
+const FBY = Object.fromEntries(FOLDERS.map(f => [f.id, f]));
+
+const ROUTES = {
+  ams:{label:"Amsterdam Schiphol", text:"Train from the station under Schiphol to Maastricht, about 2.5 hours. Many services change at Utrecht or Eindhoven."},
+  ein:{label:"Eindhoven Airport",  text:"Bus 400 or 401 to Eindhoven Centraal, then the train to Maastricht. About 1.5 hours in total."},
+  bru:{label:"Brussels Airport",   text:"Train via Liège-Guillemins to Maastricht, about 2 hours. Check the last connection if you land late."},
+  dus:{label:"Düsseldorf Airport", text:"Train via Venlo or Aachen, or a direct coach. Allow 2 to 2.5 hours."},
+  mst:{label:"Maastricht Aachen Airport", text:"Bus or taxi into the city, about 30 minutes. Flights here are limited, so check your schedule."},
+  trn:{label:"train or car",       text:"Trains from Liège, Aachen and Eindhoven run often. If you drive, look up parking at your address before you arrive."}
+};
+
+/* Plan steps. c = context {A, S, sem, nonEU, signed, route} */
+const STEPS = [
+  {key:"permit", folder:"bureaucracy", votes:88, author:"Wei, SBE '26", when:c=>add(c.A,-120), cond:c=>c.nonEU,
+   title:()=>"Start your visa and residence permit",
+   text:()=>"UM applies to the IND for you as a recognised sponsor, but only once your file is complete. The IND can take weeks to decide, so this is the step that sets your pace.",
+   items:()=>["Complete the visa and residence permit section in your UM application portal","Upload your passport scan and proof of sufficient funds","Pay the IND fee when UM asks for it","Check whether your nationality needs an MVV entry visa"]},
+  {key:"enrol", folder:"academic", votes:54, author:"Jonas, FSE '25", when:c=>add(c.A,-100), cond:()=>true,
+   title:()=>"Finish your enrolment in Studielink",
+   text:()=>"You are not a UM student until Studielink says so. Without it, you can't get a UM card, course registration or a student account.",
+   items:()=>["Accept your offer and complete enrolment in Studielink","Arrange tuition payment or a direct debit authorisation","Upload a passport photo for your UM card","Activate your UM account and student email"]},
+  {key:"housing", folder:"housing", votes:128, author:"Lena, FASoS '26", when:c=>add(c.A,-90), cond:c=>!c.signed,
+   title:()=>"Secure Housing Early",
+   text:()=>"Maastricht has far more incoming students each September and February than rooms in the centre. Good listings go within hours.",
+   items:()=>["Register on Maastricht Housing and the Guesthouse waitlist; allocation partly follows registration date","Treat any post asking for a deposit before a viewing as a scam, and never wire money to a foreign IBAN","Compare districts: Centrum and Wyck are walkable but expensive; Brusselsepoort and Mariaberg are about 10 minutes by bike","Check the landlord's KvK number against the Landlord Safelist before you sign"]},
+  {key:"contract", folder:"housing", votes:63, author:"Priya, FPN '26", when:c=>add(c.A,-60), cond:c=>c.signed,
+   title:()=>"Check your housing contract",
+   text:()=>"A signed room is only useful if you can register there. Without registration there is no BSN, and without a BSN there is no bank account.",
+   items:()=>["Confirm in writing that you may register at the address (inschrijving)","Ask what the monthly service costs cover and when they are settled","Get the landlord's KvK number and payment details in writing","Agree a key handover time for your arrival day"]},
+  {key:"money", folder:"bureaucracy", votes:47, author:"Ana, SBE '26", when:c=>add(c.A,-60), cond:()=>true,
+   title:()=>"Sort health insurance and money",
+   text:()=>"If you take a part-time job, Dutch basic health insurance becomes mandatory. Until then, your own cover has to be valid in the Netherlands.",
+   items:c=>[c.nonEU ? "Buy health and liability insurance valid in the Netherlands for your whole stay" : "Order or renew your EHIC card and check it covers your whole stay","Tell your bank you'll use your card abroad","Budget for the deposit, first month's rent, a bike and first groceries"]},
+  {key:"block", folder:"academic", votes:58, author:"Jonas, FSE '25", when:c=>add(c.S,-35), cond:()=>true,
+   title:()=>"Prepare your first block",
+   text:()=>"UM teaches in short blocks with exams at the end and no reading week. The first week counts.",
+   items:()=>["Check your timetable and course registration on the student portal","Download last year's syllabus from the Syllabi Vault","Order or borrow the core books","Read the first two cases ahead"]},
+  {key:"bsn", folder:"bureaucracy", votes:96, author:"Arjun, SBE '25", when:c=>add(c.A,-30), cond:()=>true,
+   title:()=>"Book the BSN Appointment",
+   text:()=>"Your BSN (burgerservicenummer) unlocks a Dutch bank account, a salary, health insurance and DigiD. You get it by registering in person at the Gemeente Maastricht.",
+   items:()=>["Book the registration slot online with the Gemeente Maastricht for your first week","List what to bring: passport, rental contract, and residence permit or IND letter if you're non-EU","Check whether your birth certificate needs an apostille or legalisation","Make sure the address isn't registered for more people than live there"]},
+  {key:"journey", folder:"transit", votes:39, author:"Sofia, FHML '26", when:c=>add(c.A,-21), cond:()=>true,
+   title:c=>"Book your journey via " + ROUTES[c.route].label,
+   text:c=>ROUTES[c.route].text,
+   items:()=>["Download the NS app and 9292","Aim to arrive before 18:00 so you can still collect your keys","Send your arrival time to your landlord or housing office"]},
+  {key:"docs", folder:"bureaucracy", votes:44, author:"Wei, SBE '26", when:c=>add(c.A,-14), cond:c=>c.nonEU,
+   title:()=>"Prepare your arrival documents",
+   text:()=>"Border staff, the Gemeente and the IND desk all want paper. Keep originals in your hand luggage.",
+   items:()=>["Check the MVV sticker in your passport, if you need one","Print the IND approval letter","Note where and when UM says to collect your residence permit card","Have your legalised or apostilled birth certificate ready, if your country needs one"]},
+  {key:"pack", folder:"unspoken", votes:51, author:"Hugo, FL '26", when:c=>add(c.A,-7), cond:()=>true,
+   title:()=>"Pack for Maastricht",
+   text:()=>"It rains a lot, you'll cycle everywhere, and the first week is paperwork. Pack for all three.",
+   items:()=>["One document folder: passport, rental contract, admission letter, insurance, birth certificate","A proper rain jacket; umbrellas don't survive a bike ride","An EU plug adapter (type C or F)","A debit card that works in the Netherlands; some shops don't take credit cards"]},
+  {key:"arrive", folder:"transit", votes:33, author:"Mei, UCM '25", when:c=>c.A, cond:()=>true, kind:"Arrival day",
+   title:()=>"Arrival day",
+   text:c=>ROUTES[c.route].text,
+   items:()=>["Photograph every wall, floor and appliance in your room before unpacking","Read the meters and send the photos to your landlord","Pick up basics at the nearest Aldi, Lidl or Albert Heijn"]},
+  {key:"register", folder:"bureaucracy", votes:72, author:"Arjun, SBE '25", when:c=>add(c.A,3), cond:()=>true,
+   title:()=>"Register at the Gemeente",
+   text:()=>"This is the appointment you booked a month ago. Your BSN letter usually arrives by post within one to two weeks.",
+   items:()=>["Bring your document folder and rental contract","Ask when your BSN letter will arrive","Collect your residence permit card if UM has arranged it for the same week"]},
+  {key:"mobility", folder:"transit", votes:71, author:"Sofia, FHML '26", when:c=>add(c.A,5), cond:()=>true,
+   title:()=>"Local Mobility & Essentials",
+   text:()=>"Maastricht is small and hilly at the edges. A bike covers most trips, and the train gets you to Aachen, Liège and Eindhoven for weekends.",
+   items:()=>["Install 9292; Arriva runs the local buses, and you can tap in with your bank card","Choose a Swapfiets subscription or a second-hand bike for about €80–150","Buy two locks and lock the frame to something fixed","Fit a white front light and red rear light before your first evening ride"]},
+  {key:"intro", folder:"comfort", votes:66, author:"Daniel, SBE '26", when:c=>add(c.S,-7), cond:()=>true,
+   title:c=>c.sem.n===1 ? "Introduction week (INKOM)" : "Faculty introduction days",
+   text:c=>c.sem.n===1 ? "The week before classes is for INKOM and faculty introductions. It's the easiest time of the year to make friends." : "Spring intro is smaller than in September, so sign up early and go to everything.",
+   items:()=>["Join ISN Maastricht and sign up for the welcome events","Find your tutorial building and room the day before","Save the UM Student Psychologists page; it's free and confidential"]},
+  {key:"classes", folder:"unspoken", votes:142, author:"Mei, UCM '25", when:c=>c.S, cond:()=>true, kind:"Key date",
+   title:()=>"First PBL tutorial",
+   text:()=>"Tutors grade what you say in the discussion. Silence reads as unprepared, not polite.",
+   items:()=>["Prepare one concrete point per learning goal","Speak in the first 10 minutes","Expect blunt feedback; it's about the argument, not you"]},
+  {key:"bank", folder:"bureaucracy", votes:41, author:"Ana, SBE '26", when:c=>add(c.A,18), cond:()=>true,
+   title:()=>"Open a Dutch bank account and DigiD",
+   text:()=>"Dutch rent, phone plans and webshops expect a Dutch IBAN and iDEAL. This is the step that ends the first-month friction.",
+   items:()=>["Open an account once your BSN arrives","Request DigiD at digid.nl; the activation code comes by post","Move rent payments to your Dutch account"]},
+  {key:"gp", folder:"comfort", votes:37, author:"Priya, FPN '26", when:c=>add(c.A,21), cond:()=>true,
+   title:()=>"Register with a GP (huisarts)",
+   text:()=>"In the Netherlands you see a GP before any specialist. Register while you're healthy, not when you're ill.",
+   items:()=>["Find a huisarts near your address that accepts new patients","Bring your insurance details","Save the out-of-hours number (huisartsenpost)"]},
+  {key:"carnaval", folder:"unspoken", votes:59, author:"Kwame, FL '25", when:c=>c.carnaval, cond:c=>!!c.carnaval,
+   title:()=>"Carnaval: the city stops",
+   text:()=>"Maastricht celebrates carnival harder than almost anywhere in the Netherlands. UM usually has no teaching that week.",
+   items:()=>["Check your faculty calendar for the carnival break","Expect street parties, closed shops and full trains","Book any weekend travel early, or stay and join in"]},
+  {key:"winter", folder:"comfort", votes:118, author:"Daniel, SBE '26", when:c=>c.winter, cond:c=>!!c.winter,
+   title:()=>"Daylight drops",
+   text:()=>"From November it is dark by about 16:30. Most internationals dip somewhere in weeks 6 to 10.",
+   items:()=>["Get outside in daylight between 11:00 and 14:00","Plan one social thing a week","Book a UM Student Psychologist early if you need one; it's free"]}
+];
+
+/* Seed tiles */
+const SEED_TILES = [
+  {id:"t1", folder:"unspoken", votes:142, author:"Mei, UCM '25", title:"Navigating Dutch Directness",
+   lead:"PBL tutorials at UM run on participation. Tutors grade what you say in the pre- and post-discussion, and silence reads as unprepared, not polite.",
+   mistake:"I waited to be asked and got a failing participation grade in my first block.",
+   fix:"Prepare one concrete point per learning goal and say it in the first 10 minutes. When a peer says \"I disagree, that's wrong,\" they mean the argument, not you. Reply with evidence."},
+  {id:"t2", folder:"comfort", votes:118, author:"Daniel, SBE '26", title:"Conquering Homesickness & The Winter Blues",
+   lead:"From November to February it is dark by about 16:30 and the sky stays grey for weeks. Most internationals dip somewhere in weeks 6 to 10.",
+   mistake:"I stayed in my room after tutorials and didn't notice how low I was until exams.",
+   fix:"Join ISN Maastricht in week one for trips and buddy events. Get outside in daylight between 11:00 and 14:00. UM Student Psychologists offer free, confidential sessions."},
+  {id:"t3", folder:"food", votes:104, author:"Tomás, FASoS '26", title:"Supermarket Systems",
+   lead:"Aldi and Lidl are cheapest for basics. Jumbo sits in the middle. Albert Heijn costs most unless you use the free Bonus card and its weekly deals.",
+   mistake:"I did a full shop at the Albert Heijn on the Markt and paid about a third more than at Aldi.",
+   fix:"Buy basics at Aldi or Lidl, use the AH app for Bonus deals, and feed your bottles and cans into the statiegeld machine. The receipt takes 15 or 25 cents per item off your shop."},
+  {id:"t4", folder:"unspoken", votes:97, author:"Kwame, FL '25", title:"Strict Bike Etiquette",
+   lead:"Police in the city centre run regular checks, especially in autumn, and fines are written on the spot.",
+   mistake:"I rode home from Vrijthof without a rear light and paid a fine of around €60.",
+   fix:"Keep to the right, raise an arm before you turn, and walk your bike through the shopping streets. Clip-on lights cost about €5 at HEMA."},
+  {id:"t5", folder:"housing", votes:63, author:"Priya, FPN '26", title:"Read the Contract for Service Costs",
+   lead:"Many Maastricht rooms list a base rent plus monthly service costs for energy, internet and cleaning, settled once a year.",
+   mistake:"I got a €340 bill in June for energy I thought was included.",
+   fix:"Ask for last year's service-cost settlement before signing. If the rent seems high, check it with the Huurcommissie points calculator."},
+  {id:"t6", folder:"academic", votes:58, author:"Jonas, FSE '25", title:"Blocks Move Faster Than You Think",
+   lead:"UM teaches in 8-week blocks with exams in the last week. There is no reading week to catch up.",
+   mistake:"I treated week one as orientation and was two cases behind by week three.",
+   fix:"Pull last year's syllabus from the Syllabi Vault and pre-read the first two cases. Most PBL courses require 85% attendance."},
+  {id:"t7", folder:"bureaucracy", votes:41, author:"Ana, SBE '26", title:"Bank Accounts Without a BSN", seedOld:true,
+   lead:"Some Dutch banks let you open an account before registration and add your BSN within 90 days.",
+   mistake:"I waited three weeks for my BSN before I could pay rent by iDEAL.",
+   fix:"Open a starter account online with your passport, then add the BSN when it arrives. Bank policies change yearly, so check current requirements."},
+  {id:"t8", folder:"unspoken", votes:36, author:"Hugo, FL '26", title:"Tipping Is a Courtesy",
+   lead:"Service staff in the Netherlands earn a regular wage. A tip is appreciated, never expected.",
+   mistake:"I tipped 20% on every terrace order for my first month.",
+   fix:"Round up or leave 5–10% for good table service. Nothing is expected at bars or counters. Skipping the tip screen on the card machine is normal."}
+];
+
+const QUICK = [
+  {label:"Book the BSN Appointment", kind:"step", id:"bsn"},
+  {label:"Secure Housing Early", kind:"step", id:"housing"},
+  {label:"Start your visa and residence permit", kind:"step", id:"permit"},
+  {label:"Strict Bike Etiquette", kind:"tile", id:"t4"}
+];
+
+const HEAD = {
+  timeline:{h:'Your arrival, <em>planned backwards.</em>', p:"Tell the planner when you land. It works out your semester and lays out every step from today until your first tutorial, in order."},
+  rules:{h:'What nobody tells you <em>at orientation.</em>', p:"Ranked by upvotes from current students. Anything flagged as outdated sinks until a senior re-verifies it."}
+};
+
+/* ============ HELPERS ============ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+const mk = (y, m, d) => new Date(y, m, d, 12, 0, 0);
+function add(d, n) { return mk(d.getFullYear(), d.getMonth(), d.getDate() + n); }
+function diff(a, b) { return Math.round((b - a) / 864e5); }
+const WD = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const MO = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MOL = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fShort = d => `${WD[d.getDay()]} ${d.getDate()} ${MO[d.getMonth()]}`;
+const fLong = d => `${WD[d.getDay()]}, ${d.getDate()} ${MO[d.getMonth()]} ${d.getFullYear()}`;
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+function parseISO(s) { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ""); return m ? mk(+m[1], +m[2] - 1, +m[3]) : null; }
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+const TODAY = (() => { const n = new Date(); return mk(n.getFullYear(), n.getMonth(), n.getDate()); })();
+const REDUCED = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+const mondayOnOrBefore = d => add(d, -((d.getDay() + 6) % 7));
+const mondayOnOrAfter = d => add(d, (8 - d.getDay()) % 7);
+
+function easter(y) { // Gregorian (anonymous) algorithm
+  const a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4;
+  const f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7, m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31), day = ((h + l - 7 * m + 114) % 31) + 1;
+  return mk(y, month - 1, day);
+}
+function semStarts(y) {
+  return [
+    { date: mondayOnOrAfter(mk(y, 1, 1)), n: 2, season: "Spring", year: y, ay: `${y - 1}–${String(y).slice(2)}` },
+    { date: mondayOnOrBefore(mk(y, 8, 1)), n: 1, season: "Autumn", year: y, ay: `${y}–${String(y + 1).slice(2)}` }
+  ];
+}
+function startsAround(y) { const l = []; for (let k = y - 1; k <= y + 2; k++) l.push(...semStarts(k)); return l.sort((a, b) => a.date - b.date); }
+function semFor(A) { return startsAround(A.getFullYear()).find(s => diff(s.date, A) <= 28); }
+function defaultDate() {
+  const s = startsAround(TODAY.getFullYear()).find(s => diff(TODAY, s.date) >= 28);
+  return add(s.date, -8);
+}
+
+/* ============ STATE ============ */
+const KEY = "umhub.v1";
+const ST = { inputs: { touched: false, date: null, pass: "eu", room: "open", route: "ams" }, checks: {}, votes: {}, flags: {}, tips: [], tab: "timeline", filter: null };
+function load() {
+  try {
+    const raw = localStorage.getItem(KEY); if (!raw) return;
+    const o = JSON.parse(raw);
+    if (o.inputs) Object.assign(ST.inputs, o.inputs);
+    ["checks", "votes", "flags"].forEach(k => { if (o[k] && typeof o[k] === "object") ST[k] = o[k]; });
+    if (Array.isArray(o.tips)) ST.tips = o.tips;
+  } catch (e) {}
+}
+function save() {
+  try { localStorage.setItem(KEY, JSON.stringify({ inputs: ST.inputs, checks: ST.checks, votes: ST.votes, flags: ST.flags, tips: ST.tips })); } catch (e) {}
+}
+
+/* ============ PLAN ENGINE ============ */
+let PLAN = null;
+function getInputs() {
+  const i = ST.inputs;
+  return { date: parseISO(i.date) || defaultDate(), pass: i.pass, room: i.room, route: ROUTES[i.route] ? i.route : "ams" };
+}
+function buildPlan() {
+  const inp = getInputs(), A = inp.date, sem = semFor(A);
+  const c = { A, S: sem.date, sem, nonEU: inp.pass === "non", signed: inp.room === "signed", route: inp.route, carnaval: null, winter: null };
+  for (let y = A.getFullYear(); y <= A.getFullYear() + 1 && !c.carnaval; y++) {
+    const d = add(easter(y), -49); if (diff(A, d) >= -3 && diff(A, d) <= 120) c.carnaval = d;
+  }
+  for (let y = A.getFullYear(); y <= A.getFullYear() + 1 && !c.winter; y++) {
+    const d = mondayOnOrAfter(mk(y, 10, 1)); if (diff(A, d) >= 0 && diff(A, d) <= 150) c.winter = d;
+  }
+  const steps = STEPS.filter(d => d.cond(c)).map((d, idx) => ({
+    d, key: d.key, id: "s-" + d.key, idx, date: d.when(c), title: d.title(c), text: d.text(c), items: d.items(c)
+  }));
+  steps.sort((a, b) => (a.date - b.date) || (a.idx - b.idx));
+  return { c, inp, steps };
+}
+const stepDone = s => s.items.length > 0 && s.items.every((_, i) => ST.checks[s.key] && ST.checks[s.key][i]);
+function statusOf(s) {
+  const dd = diff(TODAY, s.date);
+  if (stepDone(s)) return { cls: "st-done", txt: "Done", dot: "s-done" };
+  if (s.d.kind) return { cls: "st-key", txt: s.d.kind, dot: "s-key" };
+  if (dd < 0) return { cls: "st-late", txt: "Catch up now", dot: "s-late" };
+  if (dd === 0) return { cls: "st-soon", txt: "Today", dot: "s-soon" };
+  if (dd <= 7) return { cls: "st-soon", txt: "This week", dot: "s-soon" };
+  if (dd <= 30) return { cls: "st-month", txt: "This month", dot: "s-later" };
+  return { cls: "st-month", txt: `In ${Math.round(dd / 7)} weeks`, dot: "s-later" };
+}
+const rel = dd => dd === 0 ? "today" : dd === 1 ? "tomorrow" : dd === -1 ? "yesterday" : dd > 0 ? `in ${dd} days` : `${-dd} days ago`;
+
+/* ============ TILES / VOTES / FLAGS ============ */
+function allTiles() {
+  const mine = ST.tips.map(t => ({ ...t, user: true, votes: 0, author: "You · pending review" }));
+  return [...mine, ...SEED_TILES];
+}
+const isOld = (id, seedOld) => (id in ST.flags) ? !!ST.flags[id] : !!seedOld;
+const countOf = (id, base) => base + (ST.votes[id] ? 1 : 0);
+
+function metaHTML(id, o) {
+  const old = isOld(id, o.seedOld), n = countOf(id, o.votes), voted = !!ST.votes[id];
+  const pin = n >= 100 && !old;
+  const left = old
+    ? `<span class="pl old"><svg class="ic"><use href="#i-flag"/></svg>Flagged as outdated</span>`
+    : o.pending ? `<span class="pl pend">Pending review</span>`
+    : `<span class="pl ok"><svg class="ic"><use href="#i-shield"/></svg>Verified Accurate for 2026</span>`;
+  return `<div class="meta">${left}${pin ? `<span class="pl pin"><svg class="ic"><use href="#i-pin"/></svg>Pinned</span>` : ""}
+    <span class="auth">${esc(o.author)}</span>
+    <button type="button" class="vote" id="v-${id}" data-act="vote" data-id="${id}" aria-pressed="${voted}" aria-label="Upvote. ${plural(n, "upvote")}"><svg class="ic"><use href="#i-up"/></svg>${n}</button>
+    <button type="button" class="flagb" id="f-${id}" data-act="flag" data-id="${id}" aria-pressed="${old}" aria-label="${old ? "Remove the outdated flag" : "Flag as outdated"}"><svg class="ic"><use href="#i-flag"/></svg></button></div>`;
+}
+function sizeTxt(b) { return b >= 1048576 ? (b / 1048576).toFixed(1) + " MB" : Math.max(1, Math.round(b / 1024)) + " KB"; }
+
+/* ============ RENDER ============ */
+function renderPlanner() {
+  const { c, inp, steps } = PLAN, A = c.A;
+  const dEl = $("#inDate"); if (dEl.value !== iso(A)) dEl.value = iso(A);
+  $("#inPass").value = inp.pass; $("#inRoom").value = inp.room; $("#inRoute").value = inp.route;
+  $("#exTag").hidden = !!ST.inputs.touched;
+  $("#semName").textContent = `Semester ${c.sem.n} · ${c.sem.season} ${c.sem.year}`;
+  $("#semYear").textContent = `academic year ${c.sem.ay}`;
+  const n = diff(A, c.S);
+  const when = n > 0 ? `${plural(n, "day")} after you land` : n === 0 ? "the day you land" : `${plural(-n, "day")} before you land`;
+  $("#semNote").textContent = `Classes usually start around ${fLong(c.S)}, ${when}. Dates follow UM's usual calendar; confirm them in your faculty's academic calendar.`;
+  const toLand = diff(TODAY, A); let w = "";
+  if (toLand < 0) w = "That date has already passed. Change it to the day you actually land.";
+  else if (A > c.S) w = "You land after classes start. Tell your faculty's study advisor now.";
+  else if (diff(A, c.S) > 42) w = "You land more than six weeks before classes. Check your rental contract starts before your arrival.";
+  else if (c.nonEU && toLand < 60) w = "The residence permit is your tightest step. Contact UM's visa support today.";
+  $("#warnSlot").innerHTML = w ? `<p class="warn" role="status">${esc(w)}</p>` : "";
+  const open = steps.filter(s => !stepDone(s)), due = open.filter(s => diff(TODAY, s.date) <= 7);
+  $("#fDays").textContent = Math.max(0, toLand); $("#fOpen").textContent = open.length; $("#fDue").textContent = due.length;
+  $("#fDueBox").classList.toggle("hot", due.length > 0);
+  const done = steps.length - open.length;
+  $("#progTxt").innerHTML = `<b>${done}</b> of ${steps.length} steps done`;
+  $("#ringArc").setAttribute("stroke-dasharray", `${(steps.length ? done / steps.length : 0) * 100.53} 100.53`);
+  $("#cntT").textContent = `${done}/${steps.length}`;
+}
+
+function renderRibbon() {
+  const { c, steps } = PLAN;
+  const first = steps[0].date, last = steps[steps.length - 1].date;
+  const start = TODAY < first ? TODAY : first;
+  const end = add(last > c.S ? last : c.S, 4);
+  const span = Math.max(1, diff(start, end)), pos = d => diff(start, d) / span * 100;
+  const width = Math.max(720, span * 7);
+  let h = `<div class="base"></div><div class="past" style="width:${Math.max(0, Math.min(100, pos(TODAY)))}%"></div>`;
+  // month ticks
+  let y = start.getFullYear(), m = start.getMonth() + 1;
+  for (;;) {
+    if (m > 11) { m = 0; y++; }
+    const d = mk(y, m, 1); if (d > end) break;
+    h += `<span class="tick" style="left:${pos(d)}%">${MO[m]}${m === 0 ? " " + y : ""}</span>`; m++;
+  }
+  // dots, staggered into lanes when crowded
+  const tops = [82, 64, 100], lastX = [-99, -99, -99];
+  steps.forEach(s => {
+    const x = pos(s.date) / 100 * width; let lane = 0;
+    while (lane < 2 && x - lastX[lane] < 20) lane++;
+    lastX[lane] = x;
+    const st = statusOf(s);
+    h += `<button type="button" class="dot ${st.dot}" style="left:${pos(s.date)}%;top:${tops[lane]}px" data-act="jump" data-key="${s.key}" aria-label="${esc(s.title)}, ${fShort(s.date)}" title="${esc(s.title)} · ${fShort(s.date)}"></button>`;
+  });
+  // flags
+  const pT = pos(TODAY), pL = pos(c.A), pC = pos(c.S);
+  let todayRight = pT <= pL; // today sits left of landing: text ends at its stem
+  if (todayRight && pT < 9) todayRight = false;
+  if (!todayRight && pT > 91) todayRight = true;
+  let landRight = !todayRight; if (landRight && pL < 9) landRight = false; if (!landRight && pL > 91) landRight = true;
+  const flag = (cls, side, p, name, d, row) => `<div class="flag ${row} ${cls} ${side ? "r" : "l"}" style="left:${p}%"><span>${name}</span><small>${fShort(d)}</small></div>`;
+  h += flag("ink", todayRight, pT, "Today", TODAY, "up") + flag("blue", landRight, pL, "You land", c.A, "up") + flag("gr", pC > 80, pC, "Classes", c.S, "dn");
+  const rb = $("#ribbon"); rb.style.minWidth = width + "px"; rb.innerHTML = h;
+}
+
+function renderPlan() {
+  const { steps } = PLAN; let html = "", lastM = "";
+  steps.forEach(s => {
+    const mkey = `${MOL[s.date.getMonth()]} ${s.date.getFullYear()}`;
+    if (mkey !== lastM) { html += `<div class="month">${mkey}</div>`; lastM = mkey; }
+    const dd = diff(TODAY, s.date), done = stepDone(s), st = statusOf(s), f = FBY[s.d.folder];
+    html += `<article class="step ${done ? "is-done" : ""}" id="step-${s.key}">
+      <div class="when"><b>${fShort(s.date)}</b><span class="serif">${rel(dd)}</span>${dd < 0 && !done ? `<span class="mono">was due ${fShort(s.date)}</span>` : ""}</div>
+      <div class="sheet" id="sheet-${s.key}">
+        <span class="status ${st.cls}">${esc(st.txt)}</span>
+        <div class="sheet-t"><button type="button" class="round" id="rd-${s.key}" role="checkbox" aria-checked="${done}" aria-label="Mark all of '${esc(s.title)}' as done" data-act="stepall" data-key="${s.key}"><svg class="ic"><use href="#i-check"/></svg></button><h3>${esc(s.title)}</h3></div>
+        <p class="ex">${esc(s.text)}</p>
+        <div class="check">${s.items.map((t, i) => `<label><input type="checkbox" id="ck-${s.key}-${i}" data-act="item" data-key="${s.key}" data-i="${i}" ${ST.checks[s.key] && ST.checks[s.key][i] ? "checked" : ""}><span class="bx"><svg class="ic"><use href="#i-check"/></svg></span><span>${esc(t)}</span></label>`).join("")}</div>
+        <button type="button" class="slink" data-act="folder" data-folder="${f.id}">Seniors' tips on ${esc(f.name)} →</button>
+        ${metaHTML(s.id, { author: s.d.author, votes: s.d.votes })}
+      </div></article>`;
+  });
+  $("#plan").innerHTML = html;
+}
+
+const PAIRS = [[4, 2], [3, 3], [2, 4]];
+function tileSort(list) {
+  const key = t => { const o = isOld(t.id, t.seedOld); return [o ? 1 : 0, (t.user && !o) ? 0 : 1, -countOf(t.id, t.votes)]; };
+  return list.sort((a, b) => { const x = key(a), y = key(b); return (x[0] - y[0]) || (x[1] - y[1]) || (x[2] - y[2]); });
+}
+function renderBento() {
+  const all = allTiles(); $("#cntR").textContent = all.length;
+  let list = tileSort(all.slice()); if (ST.filter) list = list.filter(t => t.folder === ST.filter);
+  if (!list.length) { $("#bento").innerHTML = `<div class="empty">No tips in ${esc(FBY[ST.filter].name)} yet. Be the first senior to add one.</div>`; return; }
+  const spans = []; let p = 0, i = 0;
+  while (i < list.length) { if (list.length - i >= 2) { spans.push(...PAIRS[p % 3]); p++; i += 2; } else { spans.push(6); i++; } }
+  $("#bento").innerHTML = list.map((t, k) => {
+    const old = isOld(t.id, t.seedOld), black = spans[k] >= 4;
+    return `<article class="tile ${black ? "black" : ""} ${old ? "old" : ""}" id="tile-${t.id}" style="grid-column:span ${spans[k]}">
+      <div class="top"><span>${esc(FBY[t.folder].name)}</span><span>${pad(k + 1)}</span></div>
+      <h3>${esc(t.title)}</h3>
+      ${t.lead ? `<p class="lead">${esc(t.lead)}</p>` : ""}
+      <dl><div><dt class="mis">The mistake</dt><dd>${esc(t.mistake)}</dd></div><div><dt class="fx">The fix</dt><dd>${esc(t.fix)}</dd></div></dl>
+      ${t.file ? `<div class="file"><svg class="ic"><use href="#i-file"/></svg>${esc(t.file.name)} · ${sizeTxt(t.file.size)}</div>` : ""}
+      ${metaHTML(t.id, { author: t.author, votes: t.votes, seedOld: t.seedOld, pending: t.user })}
+    </article>`;
+  }).join("");
+}
+function renderChip() {
+  $("#chipSlot").innerHTML = ST.filter ? `<span class="chip">Showing ${esc(FBY[ST.filter].name)}<button type="button" data-act="clearfilter" aria-label="Remove the ${esc(FBY[ST.filter].name)} filter"><svg class="ic"><use href="#i-x"/></svg></button></span>` : "";
+}
+function renderHead() {
+  const h = HEAD[ST.tab]; $("#wsTitle").innerHTML = h.h; $("#wsLede").textContent = h.p;
+  const T = ST.tab === "timeline";
+  $("#tabT").setAttribute("aria-selected", T); $("#tabR").setAttribute("aria-selected", !T);
+  $("#tabT").tabIndex = T ? 0 : -1; $("#tabR").tabIndex = T ? -1 : 0;
+  $("#pT").hidden = !T; $("#pR").hidden = T;
+  if (T) { $("#lnTimeline").setAttribute("aria-current", "true"); $("#lnRules").removeAttribute("aria-current"); }
+  else { $("#lnRules").setAttribute("aria-current", "true"); $("#lnTimeline").removeAttribute("aria-current"); }
+}
+function renderAll() {
+  const y = window.scrollY, fid = document.activeElement && document.activeElement.id;
+  PLAN = buildPlan();
+  renderPlanner(); renderRibbon(); renderPlan(); renderBento(); renderChip(); renderHead();
+  window.scrollTo({ top: y, behavior: "instant" });
+  if (fid) { const el = document.getElementById(fid); if (el && el !== document.activeElement) el.focus({ preventScroll: true }); }
+  fitSelects();
+}
+
+/* ============ SELECT AUTO-SIZE ============ */
+function fit(sel) {
+  const cs = getComputedStyle(sel), m = document.createElement("span");
+  m.style.cssText = `position:absolute;visibility:hidden;white-space:pre;font-family:${cs.fontFamily};font-size:${cs.fontSize};font-weight:${cs.fontWeight};letter-spacing:${cs.letterSpacing}`;
+  m.textContent = sel.options[sel.selectedIndex].text; document.body.appendChild(m);
+  sel.style.width = Math.ceil(m.getBoundingClientRect().width) + 4 + "px"; m.remove();
+}
+const fitSelects = () => $$("#sentence select").forEach(fit);
+
+/* ============ TOAST / FLASH / SCROLL ============ */
+let toastT;
+function toast(msg) { $("#toastTxt").textContent = msg; const t = $("#toast"); t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 3400); }
+function flash(el) { if (!el) return; el.classList.remove("flash"); void el.offsetWidth; el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1900); }
+function focusEl(scrollId, flashId) {
+  const el = document.getElementById(scrollId); if (!el) return;
+  el.scrollIntoView({ behavior: REDUCED() ? "auto" : "smooth", block: "center" }); flash(document.getElementById(flashId));
+}
+function scrollToWs() { $("#ws").scrollIntoView({ behavior: REDUCED() ? "auto" : "smooth", block: "start" }); }
+
+/* ============ TABS ============ */
+function setTab(tab, opts = {}) {
+  ST.tab = tab; renderHead();
+  if (opts.hash !== false) { try { history.replaceState(null, "", "#" + tab); } catch (e) {} }
+}
+function goTab(tab) { closePanel(); setTab(tab); scrollToWs(); }
+function setFilter(id) { closePanel(); ST.filter = id; setTab("rules"); renderAll(); scrollToWs(); }
+
+/* ============ GO TO AN ITEM ============ */
+function goto(kind, id) {
+  closePanel();
+  if (kind === "step") {
+    if (!PLAN.steps.some(s => s.key === id)) {
+      const I = ST.inputs;
+      if (id === "permit" || id === "docs") I.pass = "non";
+      if (id === "housing") I.room = "open";
+      if (id === "contract") I.room = "signed";
+      I.touched = true; if (!I.date) I.date = iso(getInputs().date); save();
+      toast("Switched your plan so this step shows.");
+    }
+    setTab("timeline"); renderAll();
+    requestAnimationFrame(() => focusEl("step-" + id, "sheet-" + id));
+  } else {
+    const t = allTiles().find(x => x.id === id);
+    if (ST.filter && t && t.folder !== ST.filter) ST.filter = null;
+    setTab("rules"); renderAll();
+    requestAnimationFrame(() => focusEl("tile-" + id, "tile-" + id));
+  }
+}
+
+/* ============ NAV, MEGA MENU, SEARCH ============ */
+let panelMode = null, hoverT, leaveT;
+const panel = $("#panel"), blur = $("#blur");
+function topTip(fid) {
+  const c = [];
+  allTiles().filter(t => t.folder === fid && !isOld(t.id, t.seedOld)).forEach(t => c.push({ kind: "tile", id: t.id, title: t.title, n: countOf(t.id, t.votes), author: t.author }));
+  PLAN.steps.filter(s => s.d.folder === fid && !isOld(s.id)).forEach(s => c.push({ kind: "step", id: s.key, title: s.title, n: countOf(s.id, s.d.votes), author: s.d.author }));
+  return c.sort((a, b) => b.n - a.n)[0] || null;
+}
+function megaHTML(f) {
+  const top = topTip(f.id);
+  return `<div class="mega">
+    <div class="big"><h4>Explore ${esc(f.name)}</h4><a href="#" data-act="folder" data-folder="${f.id}">All of ${esc(f.name)}</a>${f.subs.map(s => `<a href="#" data-act="folder" data-folder="${f.id}">${esc(s)}</a>`).join("")}</div>
+    <div class="small"><h4>Go directly to</h4><a href="#" data-go="timeline">Plan my arrival</a><a href="#" data-go="rules">The Unspoken Rules</a><a href="#" data-open="contribute" data-folder="${f.id}">Contribute to ${esc(f.name)}</a></div>
+    <div class="top"><h4>Most upvoted here</h4>${top ? `<a class="t" href="#" data-act="goto" data-kind="${top.kind}" data-id="${top.id}">${esc(top.title)}</a><p class="m">${plural(top.n, "upvote")} · ${esc(top.author)}</p>` : ""}</div></div>`;
+}
+function burgerHTML() {
+  return `<div class="mega" style="grid-template-columns:1fr"><div class="big"><h4>Folders</h4>${FOLDERS.map(f => `<a href="#" data-act="folder" data-folder="${f.id}">${esc(f.name)}</a>`).join("")}</div>
+    <div class="small"><a href="#" data-go="timeline">Plan my arrival</a><a href="#" data-go="rules">The Unspoken Rules</a><a href="#" data-open="contribute">Contribute a Survival Tip</a></div></div>`;
+}
+function searchHTML() {
+  return `<div class="sfield"><svg class="ic"><use href="#i-search"/></svg><input id="sq" type="text" placeholder="Search the Hub" autocomplete="off" aria-label="Search the Hub"></div><div class="sres" id="sres"></div>`;
+}
+function openPanel(mode, fid, trigger) {
+  clearTimeout(leaveT);
+  const same = panelMode === mode && panel.dataset.f === (fid || "");
+  panelMode = mode; panel.dataset.f = fid || "";
+  if (!same) $("#panelIn").innerHTML = mode === "mega" ? megaHTML(FBY[fid]) : mode === "burger" ? burgerHTML() : searchHTML();
+  blur.classList.add("open"); panel.classList.add("open");
+  $$("#gnavLinks button").forEach(b => b.setAttribute("aria-expanded", mode === "mega" && b.dataset.folder === fid));
+  $("#btnBurger").setAttribute("aria-expanded", mode === "burger");
+  if (mode === "search") { if (!same) renderSearch(""); setTimeout(() => $("#sq") && $("#sq").focus(), 60); }
+}
+function closePanel(refocus) {
+  if (!panelMode) return;
+  const m = panelMode; panelMode = null;
+  blur.classList.remove("open"); panel.classList.remove("open");
+  $$("#gnavLinks button").forEach(b => b.setAttribute("aria-expanded", "false")); $("#btnBurger").setAttribute("aria-expanded", "false");
+  if (refocus && m === "search") $("#btnSearch").focus();
+}
+function searchIndex() {
+  const out = [];
+  PLAN.steps.forEach(s => out.push({ kind: "step", id: s.key, title: s.title, tag: `${FBY[s.d.folder].nav} · Plan`, hay: [s.title, s.text, ...s.items, FBY[s.d.folder].name].join(" ").toLowerCase() }));
+  allTiles().forEach(t => out.push({ kind: "tile", id: t.id, title: t.title, tag: `${FBY[t.folder].nav} · Tip`, hay: [t.title, t.lead || "", t.mistake, t.fix, FBY[t.folder].name].join(" ").toLowerCase() }));
+  return out;
+}
+function renderSearch(q) {
+  const box = $("#sres"); if (!box) return;
+  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  if (!terms.length) {
+    box.innerHTML = `<h4>Quick links</h4>` + QUICK.map(l => `<a href="#" data-act="goto" data-kind="${l.kind}" data-id="${l.id}">${esc(l.label)}</a>`).join("");
+    return;
+  }
+  const hits = searchIndex().filter(it => terms.every(t => it.hay.includes(t))).slice(0, 8);
+  box.innerHTML = hits.length ? `<h4>${plural(hits.length, "result")}</h4>` + hits.map(it => `<a href="#" data-act="goto" data-kind="${it.kind}" data-id="${it.id}">${esc(it.title)}<span>${esc(it.tag)}</span></a>`).join("") : `<p class="none">Nothing matches "${esc(q)}". Try a shorter word, like "bike" or "BSN".</p>`;
+}
+function buildNav() {
+  $("#gnavLinks").innerHTML = FOLDERS.map(f => `<button type="button" data-folder="${f.id}" aria-expanded="false" aria-haspopup="true">${esc(f.nav)}</button>`).join("");
+  $("#footCols").innerHTML = FOLDERS.map(f => `<div><h4>${esc(f.name)}</h4>${f.subs.map(s => `<button type="button" data-act="folder" data-folder="${f.id}">${esc(s)}</button>`).join("")}</div>`).join("");
+  const hov = window.matchMedia("(hover: hover)").matches, head = $(".gnav");
+  $$("#gnavLinks button").forEach(b => {
+    b.addEventListener("mouseenter", () => { if (!hov) return; clearTimeout(hoverT); clearTimeout(leaveT); hoverT = setTimeout(() => openPanel("mega", b.dataset.folder, b), 140); });
+    b.addEventListener("click", e => {
+      if (e.pointerType === "mouse") { setFilter(b.dataset.folder); return; }
+      if (panelMode === "mega" && panel.dataset.f === b.dataset.folder) closePanel(); else openPanel("mega", b.dataset.folder, b);
+    });
+  });
+  const leave = () => { clearTimeout(hoverT); if (panelMode === "mega") { clearTimeout(leaveT); leaveT = setTimeout(() => { if (panelMode === "mega") closePanel(); }, 180); } };
+  head.addEventListener("mouseleave", leave); panel.addEventListener("mouseleave", leave);
+  head.addEventListener("mouseenter", () => clearTimeout(leaveT)); panel.addEventListener("mouseenter", () => clearTimeout(leaveT));
+}
+
+/* ============ CONTRIBUTE MODAL ============ */
+const ov = $("#ov"); let opener = null, picked = null, fileBad = false;
+function openModal(trigger, fid) {
+  closePanel(); opener = trigger || document.activeElement;
+  const sel = $("#fTopic");
+  sel.innerHTML = `<option value="">Choose a folder</option>` + FOLDERS.map(f => `<option value="${f.id}">${esc(f.name)}</option>`).join("");
+  sel.value = fid && FBY[fid] ? fid : "";
+  ov.classList.add("open"); ov.setAttribute("aria-hidden", "false"); document.documentElement.style.overflow = "hidden";
+  setTimeout(() => (sel.value ? $("#fHead") : sel).focus(), 80);
+}
+function closeModal() {
+  ov.classList.remove("open"); ov.setAttribute("aria-hidden", "true"); document.documentElement.style.overflow = "";
+  const o = opener; opener = null;
+  if (o && o.focus) { o.focus(); if (document.activeElement !== o) $("#btnPlus").focus(); }
+}
+function pickFile(file) {
+  fileBad = false; picked = null; $("#f-file").classList.remove("bad");
+  if (!file) { $("#dropTxt").textContent = "Drop a PDF here or click to choose. Up to 10 MB."; return; }
+  const ok = (file.type === "application/pdf" || /\.pdf$/i.test(file.name)) && file.size <= 10 * 1024 * 1024;
+  if (!ok) { fileBad = true; $("#f-file").classList.add("bad"); $("#fileErr").textContent = /\.pdf$/i.test(file.name) || file.type === "application/pdf" ? "That PDF is over 10 MB." : "Only PDF files are accepted."; $("#dropTxt").textContent = "Drop a PDF here or click to choose. Up to 10 MB."; return; }
+  picked = file; $("#dropTxt").innerHTML = `<b>${esc(file.name)}</b>${sizeTxt(file.size)}`;
+}
+function validate() {
+  const v = { topic: FBY[$("#fTopic").value], head: $("#fHead").value.trim().length >= 4, mis: $("#fMis").value.trim().length >= 20, fix: $("#fFix").value.trim().length >= 20, file: !fileBad };
+  const map = { topic: "#fTopic", head: "#fHead", mis: "#fMis", fix: "#fFix", file: "#drop" };
+  let first = null;
+  [["topic", "f-topic"], ["head", "f-head"], ["mis", "f-mis"], ["fix", "f-fix"], ["file", "f-file"]].forEach(([k, id]) => {
+    const ok = !!v[k]; $("#" + id).classList.toggle("bad", !ok); if (!ok && !first) first = map[k];
+  });
+  if (first) $(first).focus();
+  return !first;
+}
+function submitTip(e) {
+  e.preventDefault(); if (!validate()) return;
+  const tip = { id: "u" + Date.now(), folder: $("#fTopic").value, title: $("#fHead").value.trim(), mistake: $("#fMis").value.trim(), fix: $("#fFix").value.trim(), file: picked ? { name: picked.name, size: picked.size } : null };
+  ST.tips.unshift(tip); save();
+  $("#form").reset(); $("#fCnt").textContent = "0 / 70"; pickFile(null);
+  closeModal(); ST.filter = null; setTab("rules"); renderAll();
+  requestAnimationFrame(() => focusEl("tile-" + tip.id, "tile-" + tip.id));
+  toast("Tip submitted. It's in the Unspoken Rules while seniors review it.");
+}
+
+/* ============ EVENTS ============ */
+document.addEventListener("click", e => {
+  const el = e.target.closest("[data-act],[data-go],[data-open]"); if (!el) return;
+  if (el.tagName === "A") e.preventDefault();
+  if (el.dataset.go) { goTab(el.dataset.go); return; }
+  if (el.dataset.open) { openModal(el, el.dataset.folder); return; }
+  const id = el.dataset.id, act = el.dataset.act;
+  if (act === "folder") setFilter(el.dataset.folder);
+  else if (act === "clearfilter") { ST.filter = null; renderAll(); }
+  else if (act === "goto") goto(el.dataset.kind, id);
+  else if (act === "jump") focusEl("step-" + el.dataset.key, "sheet-" + el.dataset.key);
+  else if (act === "vote") { ST.votes[id] = !ST.votes[id]; if (!ST.votes[id]) delete ST.votes[id]; save(); renderAll(); }
+  else if (act === "flag") {
+    const t = SEED_TILES.find(x => x.id === id), now = isOld(id, t && t.seedOld);
+    ST.flags[id] = !now; save(); renderAll();
+    toast(!now ? "Flagged as outdated. It sinks until a senior re-verifies it." : "Flag removed. Back in the ranking.");
+  } else if (act === "stepall") {
+    const s = PLAN.steps.find(x => x.key === el.dataset.key), was = stepDone(s);
+    ST.checks[s.key] = {}; if (!was) s.items.forEach((_, i) => ST.checks[s.key][i] = true);
+    save(); renderAll(); if (!was) toast(`'${s.title}' is done.`);
+  }
+});
+document.addEventListener("change", e => {
+  const el = e.target;
+  if (el.dataset && el.dataset.act === "item") {
+    const s = PLAN.steps.find(x => x.key === el.dataset.key), was = stepDone(s);
+    ST.checks[s.key] = ST.checks[s.key] || {}; ST.checks[s.key][el.dataset.i] = el.checked;
+    save(); renderAll(); if (!was && stepDone(s)) toast(`'${s.title}' is done.`);
+  }
+});
+["inDate", "inPass", "inRoom", "inRoute"].forEach(id => $("#" + id).addEventListener("change", () => {
+  const I = ST.inputs;
+  if (!I.touched) I.date = iso(getInputs().date);
+  I.touched = true;
+  const d = $("#inDate").value; I.date = parseISO(d) ? d : null;
+  I.pass = $("#inPass").value; I.room = $("#inRoom").value; I.route = $("#inRoute").value;
+  save(); renderAll();
+}));
+$("#seg").addEventListener("click", e => { const b = e.target.closest("[role=tab]"); if (b) setTab(b.id === "tabT" ? "timeline" : "rules"); });
+$("#seg").addEventListener("keydown", e => {
+  if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(e.key)) return;
+  e.preventDefault(); const next = (e.key === "ArrowLeft" || e.key === "Home") ? "timeline" : "rules";
+  setTab(next); $(next === "timeline" ? "#tabT" : "#tabR").focus();
+});
+window.addEventListener("hashchange", () => { const h = location.hash.slice(1); if ((h === "timeline" || h === "rules") && h !== ST.tab) setTab(h, { hash: false }); });
+blur.addEventListener("click", () => closePanel());
+$("#btnSearch").addEventListener("click", () => panelMode === "search" ? closePanel() : openPanel("search"));
+$("#btnBurger").addEventListener("click", () => panelMode === "burger" ? closePanel() : openPanel("burger"));
+$("#btnPlus").addEventListener("click", e => openModal(e.currentTarget));
+document.addEventListener("input", e => { if (e.target.id === "sq") renderSearch(e.target.value); });
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { if (ov.classList.contains("open")) closeModal(); else closePanel(true); return; }
+  if (e.key === "/" && !e.metaKey && !e.ctrlKey && !e.altKey && !ov.classList.contains("open")) {
+    const t = e.target, tag = t.tagName; if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || t.isContentEditable) return;
+    e.preventDefault(); openPanel("search");
+  }
+  if (e.key === "Tab" && ov.classList.contains("open")) {
+    const f = $$("button,input,select,textarea,[tabindex='0']", $("#form")).filter(x => !x.disabled && x.offsetParent !== null && x.tabIndex >= 0);
+    if (!f.length) return; const a = f[0], z = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === a) { e.preventDefault(); z.focus(); }
+    else if (!e.shiftKey && document.activeElement === z) { e.preventDefault(); a.focus(); }
+  }
+});
+ov.addEventListener("mousedown", e => { if (e.target === ov) closeModal(); });
+$("#mClose").addEventListener("click", closeModal); $("#mCancel").addEventListener("click", closeModal);
+$("#form").addEventListener("submit", submitTip);
+$("#fHead").addEventListener("input", e => { $("#fCnt").textContent = `${e.target.value.length} / 70`; });
+["fTopic", "fHead", "fMis", "fFix"].forEach(id => $("#" + id).addEventListener("input", e => e.target.closest(".fld").classList.remove("bad")));
+const fileIn = $("#fFile"), drop = $("#drop"); fileIn.tabIndex = -1;
+fileIn.addEventListener("change", () => pickFile(fileIn.files[0] || null));
+drop.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileIn.click(); } });
+["dragenter", "dragover"].forEach(n => drop.addEventListener(n, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(n => drop.addEventListener(n, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => { const f = e.dataTransfer && e.dataTransfer.files[0]; if (f) pickFile(f); });
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(fitSelects, 120); });
+
+/* ============ BOOT ============ */
+load();
+const h0 = location.hash.slice(1); if (h0 === "rules" || h0 === "timeline") ST.tab = h0;
+buildNav();
+$("#ledN").textContent = STEPS.length + SEED_TILES.length;
+renderAll();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitSelects);
+const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+const syncMotion = () => { const m = $("#map"); try { mq.matches ? m.pauseAnimations() : m.unpauseAnimations(); } catch (e) {} };
+syncMotion(); if (mq.addEventListener) mq.addEventListener("change", syncMotion);
+</script>
+
+</body>
+</html>
